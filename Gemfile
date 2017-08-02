@@ -33,6 +33,8 @@ gem 'execjs'
 gem 'therubyracer'
 gem 'rails_12factor'
 gem "paperclip-storage-ftp"
+gem 'ruby-trello'
+gem 'gon'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
