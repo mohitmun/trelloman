@@ -1,0 +1,123 @@
+#todo
+# some are Prompt rude
+bot:
+  name: "Trelloman"
+  description: 'Get things done'
+  clarification_prompt:
+    messages:
+      - content_type: 'PlainText'
+        content: |
+          Welcome to Trelloman
+    max_attempts: 5
+  abort_statement:
+    messages: 
+      - content_type: 'PlainText'
+        content: 'Bot failed'
+  process_behavior: 'BUILD'
+  locale: 'en-US'
+  child_directed: True
+slot_types: []
+intents:
+  - name: 'TrelloBookCabUber'
+    description: "Books cab for you"
+    sample_utterances:
+      - I want to book a cab
+      - book uber
+      - book cab
+      - book cab for me
+      - book cab to {to_postal_address_slot}
+      - book cab from {from_postal_address_slot} to {to_postal_address_slot}
+      - book cab {from_work_slot}
+      - book cab {to_work_slot}
+      - book cab {from_home_slot}
+      - book cab {to_home_slot}
+      - book cab {to_work_slot} {from_home_slot}
+      - book cab {from_home_slot} {to_work_slot}
+      - book cab {to_home_slot} {from_work_slot}
+      - book cab {from_work_slot} {to_home_slot}
+    slots:
+      - name: to_postal_address_slot
+        slot_constraint: Optional
+        slot_type: AMAZON.PostalAddress
+        value_elicitation_prompt:
+          max_attempts: 3
+          messages:
+            - content_type: PlainText
+              content: Please tell me your destination address
+      - name: from_postal_address_slot
+        slot_constraint: Optional
+        slot_type: AMAZON.PostalAddress
+        value_elicitation_prompt:
+          max_attempts: 3
+          messages:
+            - content_type: PlainText
+              content: Please tell me your pickup address
+      - name: from_work_slot
+        slot_constraint: Optional
+        slot_type: from_work_slot_type
+        slot_type_version: "$LATEST"
+      - name: to_work_slot
+        slot_constraint: Optional
+        slot_type: to_work_slot_type
+        slot_type_version: "$LATEST"
+      - name: to_home_slot
+        slot_constraint: Optional
+        slot_type: to_home_slot_type
+        slot_type_version: "$LATEST"
+      - name: from_home_slot
+        slot_constraint: Optional
+        slot_type: from_home_slot_type
+        slot_type_version: "$LATEST"
+      - name: fare_slot
+        slot_constraint: Optional
+        slot_type: fare_slot_type
+        slot_type_version: "$LATEST"
+  - name: 'TrellomanSendMailGmail'
+    description: 'Send message in Gmail'
+    sample_utterances:
+      - 'send email'
+      - 'send message'
+      - 'send message {email_message_slot}'
+      - 'send message {email_message_slot} to {email_slot} with {subject_slot}'
+      - 'send email {email_message_slot} to {email_slot} with {subject_slot}'
+      - 'send message {email_message_slot} with {subject_slot}'
+      - 'send email {email_message_slot} with {subject_slot}'
+      - 'send message {email_message_slot} with subject {subject_slot}'
+      - 'send email {email_message_slot} with subject {subject_slot}'
+      - 'email {email_message_slot} with subject {subject_slot}'
+      - '{reply_intent_slot} email'
+      - '{reply_intent_slot} message'
+      - '{reply_intent_slot} email {email_message_slot}'
+      - '{reply_intent_slot} message {email_message_slot}'
+    slots:
+      - name: reply_intent_slot
+        slot_constraint: Optional
+        slot_type: reply_intent_slot_type
+        slot_type_version: "$LATEST"
+      - name: email_message_slot
+        slot_constraint: Optional
+        slot_type: email_message_slot_type
+        slot_type_version: "$LATEST"
+        value_elicitation_prompt:
+          max_attempts: 3
+          messages:
+            - content_type: PlainText
+              content: What should I send in body?
+      - name: subject_slot
+        slot_constraint: Required
+        slot_type: subject_slot_type
+        slot_type_version: "$LATEST"
+        value_elicitation_prompt:
+          max_attempts: 3
+          messages:
+            - content_type: PlainText
+              content: What should be the subject?
+      - name: email_slot
+        slot_constraint: Optional
+        slot_type: email_slot_type
+        slot_type_version: "$LATEST"
+        value_elicitation_prompt:
+          max_attempts: 3
+          messages:
+            - content_type: PlainText
+              content: Please provide email address
