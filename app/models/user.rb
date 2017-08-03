@@ -95,7 +95,7 @@ class User  < ActiveRecord::Base
     if due
       d = d + "-d due=#{due}"
     end
-    curl("'https://api.trello.com/1/cards/#{card_id}' #{d}")
+    curl("'https://api.trello.com/1/cards/#{card_id}' #{d} -X PUT")
   end
 
   def self.handle_webhook(data)
@@ -108,8 +108,8 @@ class User  < ActiveRecord::Base
       log(time)
       if time.is_a?(Time)
         log("time detected tile:#{time}")
-        u 
-        update_card(card_id, due: time.to_i)
+        u = User.find_by_trello_id(action.idMemberCreator)
+        u.update_card(card_id, due: time.to_i*1000)
       end
     end
   end
