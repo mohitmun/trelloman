@@ -13,8 +13,10 @@ Rails.application.routes.draw do
   get 'powerup/manifest' => "application#manifest"
   get 'powerup/index' => "welcome#powerup_index"
   get 'save_token' => "welcome#save_token"
+  get 'auto_due' => "welcome#auto_due"
   post 'incoming_trello' => "welcome#incoming_trello"
   get 'incoming_trello' => "welcome#incoming_trello"
+  post 'incoming_sutime' => "welcome#incoming_sutime"
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
