@@ -12,7 +12,9 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get 'powerup/manifest' => "application#manifest"
   get 'powerup/index' => "welcome#powerup_index"
-  post 'save_token' => "welcome#save_token"
+  get 'save_token' => "welcome#save_token"
+  post 'incoming_trello' => "welcome#incoming_trello"
+  get 'incoming_trello' => "welcome#incoming_trello"
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 

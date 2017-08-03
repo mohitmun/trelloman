@@ -1,7 +1,7 @@
 development:
   adapter: postgresql
   encoding: utf8
-  database: appname
+  database: trelloman_dev
   pool: 26
   host: localhost
   username: mohitmunjani
