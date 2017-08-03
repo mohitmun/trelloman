@@ -28,6 +28,7 @@ gem 'execjs'
 gem 'therubyracer'
 gem 'rails_12factor'
 gem 'gon'
+gem 'jquery-rails'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
