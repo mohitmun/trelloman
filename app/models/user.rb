@@ -17,6 +17,7 @@ class User  < ActiveRecord::Base
   def self.find_by_trello_id(tid)
     return User.where("(json_store ->> 'trello_id') = ?", tid).last
   end
+  
 
   def delete_all_webhook
     webhooks = get_webhooks
