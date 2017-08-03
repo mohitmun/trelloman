@@ -4,7 +4,7 @@ class User  < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   store_accessor :json_store, :trello_token, :me_info, :trello_id
-  HOST = "https://b3802de4.ngrok.io"
+  HOST = ENV['HOST']
   WEBHOOK_URL = "#{HOST}/incoming_trello"
   
   def set_trello_webhook
