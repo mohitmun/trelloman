@@ -13,7 +13,7 @@ gem 'pg'
 # Use CoffeeScript for .coffee assets and views
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
-
+gem 'uglifier', '>= 1.3.0'
 # Use jquery as the JavaScript library
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
@@ -28,8 +28,6 @@ gem 'execjs'
 gem 'therubyracer'
 gem 'rails_12factor'
 gem 'gon'
-gem 'chronic'
-gem 'thin'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
