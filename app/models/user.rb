@@ -29,12 +29,12 @@ class User  < ActiveRecord::Base
     curl(" -X DELETE 'https://api.trello.com/1/webhooks/#{webhook_id}'")
   end
 
-    RubyPython.start
+    # RubyPython.start
   def self.parse_sentence_for_time_from_sutime(s)
-    sys = RubyPython.import("sys")
-    sys.path.append('.')
-    sutime = RubyPython.import("example")
-    res = sutime.parse(s).rubify.parse_json
+    # sys = RubyPython.import("sys")
+    # sys.path.append('.')
+    # sutime = RubyPython.import("example")
+    res = `python example.py '#{s}'`.split("=====")[1].parse_json
     # RubyPython.stop
     return res
   end
