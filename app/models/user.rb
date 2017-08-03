@@ -17,8 +17,13 @@ class User  < ActiveRecord::Base
   def self.find_by_trello_id(tid)
     return User.where("(json_store ->> 'trello_id') = ?", tid).last
   end
-  
 
+  def self.download_jars
+    `wget https://jar-download.com/zipTmp/5982a74223079/jar_files.zip`
+    `mkdir jars`
+    `unzip jar_files.zip -d jars`
+  end
+  
   def delete_all_webhook
     webhooks = get_webhooks
     webhooks.each do |webhook|
