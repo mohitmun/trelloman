@@ -1,0 +1,31 @@
+{
+  "name": "aaTrelloman",
+  "description": "",
+  "details": "Details",
+  "icon": {
+    "url": "./images/logo.png"
+  },
+  "author": "Mohit Munjani",
+  "capabilities": [
+    "attachment-sections",
+    "attachment-thumbnail",
+    "board-buttons",
+    "callback",
+    "card-badges",
+    "card-buttons",
+    "card-detail-badges",
+    "card-from-url",
+    "format-url",
+    "show-settings",
+    "show-authorization",
+    "authorization-status"
+  ],
+  "connectors": {
+    "iframe": {
+      "url": "./index.html"
+    }
+  },
+  "recommend": {
+    "urls": []
+  }
+}

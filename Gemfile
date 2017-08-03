@@ -25,7 +25,7 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'aws-sdk'
+gem 'aws-sdk', '~> 2'
 gem 'devise'
 gem 'haml'
 gem 'paperclip'
@@ -33,8 +33,11 @@ gem 'execjs'
 gem 'therubyracer'
 gem 'rails_12factor'
 gem "paperclip-storage-ftp"
-gem 'ruby-trello'
+gem 'ruby-trello', require: 'trello'
 gem 'gon'
+gem 'chronic'
+gem "rubypython"
+gem 'thin'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
