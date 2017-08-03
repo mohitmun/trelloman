@@ -19,3 +19,11 @@
 .env
 
 *.jar
+
+tp.js
+
+trello_incoming.json
+
+notes
+
+example.pyc
