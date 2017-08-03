@@ -53,34 +53,10 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-    <artifactId>maven-clean-plugin</artifactId>
-    <version>2.4.1</version>
-    <configuration>
-        <filesets>
-            <fileset>
-                <directory>target/</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-                <excludes>
-                    <exclude>dependency/*.jar</exclude>
-                    <exclude>*.war</exclude>
-                </excludes>
-                <followSymlinks>false</followSymlinks>
-            </fileset>
-        </filesets>
-        <excludeDefaultDirectories>true</excludeDefaultDirectories>
-    </configuration>
-    <executions>
-        <execution>
-            <id>auto-clean</id>
-            <phase>install</phase>
-            <goals>
-                <goal>clean</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
@@ -123,7 +99,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -134,14 +110,14 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>./jars</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
         </plugins>
     </build>
 </project>
