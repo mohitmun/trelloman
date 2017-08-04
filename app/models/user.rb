@@ -160,7 +160,7 @@ class User  < ActiveRecord::Base
     else
       #todo add comment
       #click 'add due date to blah blah' to
-      add_comment_to_card(card_id, "Due date found as #{get_zoned_time_from_ts(due)}. Click 'Deadline' to set it")
+      # add_comment_to_card(card_id, "Due date found as #{get_zoned_time_from_ts(due)}. Click 'Deadline' to set it")
       self.updatable_cards[card_id] = due
       self.save
     end
@@ -180,7 +180,8 @@ class User  < ActiveRecord::Base
   end
 
   def mama(i)
-    i + (timezone_offset.to_i*60)
+    res = i + (timezone_offset.to_i*60)
+    return res
   end
 
   def authorized?
@@ -193,15 +194,22 @@ class User  < ActiveRecord::Base
     callback_data = data.callback_data.parse_json
     text = data.sutime_result.last.text rescue nil
     value = data.sutime_result.last.value rescue nil
+    type = data.sutime_result.last.type rescue nil
+    u = User.find_by_trello_id(callback_data.user_id)
     if value.blank?
       time = nil
     else
       # time = Chronic.parse(value)
-      time = DateTime.parse(value)
+      if type == "DURATION"
+        duration_in_sec = ISO8601Parser.new(value).parse!
+        time = Time.now.to_i + duration_in_sec
+      else
+        time = DateTime.parse(value)
+        time = u.mama(time.to_i)
+      end
     end
     if time
-      u = User.find_by_trello_id(callback_data.user_id)
-      u.update_card_with_due_date(callback_data.card_id, u.mama(time.to_i))
+      u.update_card_with_due_date(callback_data.card_id, time)
     end
   end
 
