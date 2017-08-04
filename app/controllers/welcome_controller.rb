@@ -8,6 +8,7 @@ class WelcomeController < ApplicationController
 
   def powerup_index
     headers["X-Frame-Options"] = "ALLOWALL"
+    #todo if audo due date then dont show button
     gon.card_button_text = "Auto Due Date"
     gon.application_name = User.get_manifest.name
     render "welcome/powerup_index"
@@ -24,11 +25,14 @@ class WelcomeController < ApplicationController
   end
 
   def save_token
-    u = User.create_user_from_trello_token(params[:token])
+    u = User.create_user_from_trello_token(params[:token], tz: params[:tz])
     if !u.blank?
       sign_in u
     end
-    render json: {success: true}
+    if !params[:wh].blank?
+      u.set_trello_webhook
+    end
+    render json: {success: u.authorized?}
   end
 
   def incoming_trello
