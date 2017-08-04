@@ -2,17 +2,97 @@
   <head>
     <link rel="stylesheet" href="https://trello.com/power-ups/power-up.css">
     <script src="https://trello.com/power-ups/power-up.min.js"></script>
+    <style type="text/css">
+      #DIV_1 {
+    bottom: 0px;
+    color: rgb(77, 77, 77);
+    height: 75px;
+    left: 0px;
+    position: relative;
+    right: 0px;
+    text-decoration: none solid rgb(77, 77, 77);
+    text-size-adjust: 100%;
+    top: 0px;
+    width: 504px;
+    column-rule-color: rgb(77, 77, 77);
+    perspective-origin: 252px 37.5px;
+    transform-origin: 252px 37.5px;
+    caret-color: rgb(77, 77, 77);
+    border: 0px none rgb(77, 77, 77);
+    font: normal normal normal normal 14px / 18px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgb(77, 77, 77) none 0px;
+}/*#DIV_1*/
+
+#TEXTAREA_2 {
+    background-position: 0px 0px;
+    color: rgb(77, 77, 77);
+    display: block;
+    height: 75px;
+    min-height: 75px;
+    resize: none;
+    text-decoration: none solid rgb(77, 77, 77);
+    text-size-adjust: 100%;
+    unicode-bidi: plaintext;
+    width: 504px;
+    column-rule-color: rgb(77, 77, 77);
+    perspective-origin: 252px 37.5px;
+    transform-origin: 252px 37.5px;
+    caret-color: rgb(77, 77, 77);
+    background: #ffffff none repeat scroll 0px 0px / auto padding-box border-box;
+    border-top: 0px none rgb(77, 77, 77);
+    border-right: 0px none rgb(77, 77, 77);
+    border-bottom: 30px solid rgba(0, 0, 0, 0);
+    border-left: 0px none rgb(77, 77, 77);
+    border-radius: 3px 3px 3px 3px;
+    font: normal normal normal normal 14px / 18px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgb(77, 77, 77) none 0px;
+    overflow: hidden;
+    padding: 9px 11px 0px;
+    transition: background 0.085s ease-in 0s, border-color 0.085s ease-in 0s;
+}/*#TEXTAREA_2*/
+#INPUT_1 {
+    box-shadow: rgb(63, 111, 33) 0px 1px 0px 0px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    height: 36px;
+    min-height: 32px;
+    text-align: center;
+    text-decoration: none solid rgb(255, 255, 255);
+    text-size-adjust: 100%;
+    white-space: pre;
+    width: 72.4531px;
+    column-rule-color: rgb(255, 255, 255);
+    align-items: flex-start;
+    perspective-origin: 36.2188px 18px;
+    transform-origin: 36.2188px 18px;
+    user-select: none;
+    caret-color: rgb(255, 255, 255);
+    background: rgba(0, 0, 0, 0) linear-gradient(rgb(97, 189, 79) 0px, rgb(90, 172, 68) 100%) repeat scroll 0% 0% / auto padding-box border-box;
+    border: 0px none rgb(255, 255, 255);
+    border-radius: 3px 3px 3px 3px;
+    font: normal normal bold normal 14px / 22px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    margin: 0px 4px 0px 0px;
+    outline: rgb(255, 255, 255) none 0px;
+    padding: 7px 20px;
+}/*#INPUT_1*/
+
+    </style>
   </head>
   <body>
     <div id="content">
-      <p>Tips for using attachment-sections</p>
-      <ol>
+      <p> <p id="main_mess">We figured you are trying to send email</p> </p>
+      <!-- <ol>
         <li>Make sure your section feels at home on the card. It should fit in with the rest of the card and not stick out.</li>
         <li>You can specify a height when you claim the section, and also use t.sizeTo() to make sure your section is the perfect height.</li>
         <li>Try to keep the height of your sections to a minimum.</li>
         <li>It should be obvious to the user what attachments went into your section. They shouldn't be left wondering were one of their attachments disappeared to.</li>
-      </ol>
-      <p class="u-quiet">Claimed attachment urls: <span id="urls"></span></p>
+      </ol> -->
+      <!-- <p class="u-quiet">Claimed attachment urls: <span id="urls"></span></p> -->
+      <div id="DIV_1">
+  <textarea name="to" placeholder="To" tabindex="1" style="height: 30px !important; min-height: 35px !important; border-bottom: none; !important;" id="TEXTAREA_2"></textarea>
+  <textarea name="sub" placeholder="Email Subject" tabindex="1" style="height: 30px !important; min-height: 35px !important; border-bottom: none; !important;" id="TEXTAREA_2"></textarea>
+  <textarea name="body" placeholder="Email Body" tabindex="1" id="TEXTAREA_2"></textarea>
+   <input tabindex="3" type="submit" value="Send" id="INPUT_1" />
     </div>
     <script src="./js/section.js"></script>
   </body>

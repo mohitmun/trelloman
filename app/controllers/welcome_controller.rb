@@ -9,9 +9,31 @@ class WelcomeController < ApplicationController
   def powerup_index
     headers["X-Frame-Options"] = "ALLOWALL"
     #todo if audo due date then dont show button
+    gon.host = User::HOST
     gon.card_button_text = User.get_manifest.name
     gon.application_name = User.get_manifest.name
     render "welcome/powerup_index"
+  end
+
+  def send_email
+    url = nil
+    if !params[:to].blank? && !params[:sub].blank? && !params[:body].blank?
+      res = current_user.send_email(params)
+      url = "https://mail.google.com/mail/u/0/?ibxr=0#all/" + res.id
+    end
+
+    render json: {success: true, url: url}
+  end
+
+  def oauth2callback
+    if current_user
+      current_user.get_access_token(params[:code])
+    end
+    render json: {success: true}
+  end
+
+  def oauth
+    redirect_to User::GMAIL_AUTH_URL
   end
 
   def auto_due

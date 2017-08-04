@@ -115,7 +115,7 @@ TrelloPowerUp.initialize({
 
     // we will just claim urls for Yellowstone
     var claimed = options.entries.filter(function(attachment){
-      return attachment.url.indexOf('http://www.nps.gov/yell/') == 0;
+      return attachment.url.indexOf(gon.host) == 0;
     });
 
     // you can have more than one attachment section on a card
@@ -127,14 +127,14 @@ TrelloPowerUp.initialize({
       // that returns the section title. If you do so, provide a unique id for
       // your section
       return [{
-        id: 'Yellowstone', // optional if you aren't using a function for the title
+        id: 'Send Email', // optional if you aren't using a function for the title
         claimed: claimed,
         icon: GRAY_ICON,
-        title: 'Example Attachment Section: Yellowstone',
+        title: 'Send Email',
         content: {
           type: 'iframe',
           url: t.signUrl('./section.html', { arg: 'you can pass your section args here' }),
-          height: 230
+          height: 260
         }
       }];
     } else {

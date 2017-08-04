@@ -3,14 +3,46 @@ class User  < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  store_accessor :json_store, :trello_token, :me_info, :trello_id, :auto_update_card, :updatable_cards, :timezone_offset, :disabled
+  store_accessor :json_store, :trello_token, :me_info, :trello_id, :auto_update_card, :updatable_cards, :timezone_offset, :disabled, :gmail_auth, :refresh_token
   HOST = ENV['HOST']
+  REDIRECT_URI = "#{ENV['HOST']}/oauth2callback"
   WEBHOOK_URL = "#{HOST}/incoming_trello"
+  GMAIL_AUTH_URL = "https://accounts.google.com/o/oauth2/auth?scope=email+https://www.googleapis.com/auth/gmail.modify&response_type=code&access_type=offline&prompt=consent&client_id=#{ENV['GMAIL_CLIENT_ID']}&redirect_uri=#{REDIRECT_URI}"
   after_initialize :init
 
   def init
     self.updatable_cards = {} if self.updatable_cards.blank?
     self.timezone_offset = 0 if self.timezone_offset.blank?
+  end
+
+  def get_lex_intent(text)
+    a = Aws::Lex::Client.new
+    return a.post_text(input_text: text, bot_name: "Trelloman", bot_alias: "$LATEST", user_id: trello_id).intent_name
+  end
+
+  def send_email(params)
+    draft_message = "To: "+params["to"]+"\r\n" +    "From: <"+email+">\r\n" +     "Subject: "+params["sub"]+"\r\n" +    "Content-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: quoted-printable\r\n\r\n" +    params["body"]+"\r\n"
+    print("=====")
+    print(draft_message)
+    print("=====")
+    encodedMail = Base64.encode64(draft_message).gsub("+", "-").gsub("//", "_")
+    url = "https://www.googleapis.com/gmail/v1/users/me/messages/send"
+    res = User.curl("'#{url}' --data '#{{raw: encodedMail}.to_json}' -H 'Content-Type: application/json' -H 'Authorization: Bearer #{gmail_auth.access_token}'")
+    return res
+  end
+
+  def get_access_token(code)
+    # 4/DECnHiBAl9tIxWzgy5wEHvKO5zNO-0uEjgjMxE8hXvg#
+    res = User.curl "https://www.googleapis.com/oauth2/v4/token -d 'code=#{code}' -d 'client_id=#{ENV['GMAIL_CLIENT_ID']}' -d 'client_secret=#{ENV['GMAIL_CLIENT_SECRET']}' -d 'redirect_uri=#{REDIRECT_URI}' -d 'grant_type=authorization_code'"
+    self.gmail_auth = res
+    self.refresh_token = res.refresh_token
+    self.save
+  end
+
+  def refresh_access_token
+    res = User.curl "https://www.googleapis.com/oauth2/v4/token -d 'refresh_token=#{refresh_token}' -d 'client_id=#{ENV['GMAIL_CLIENT_ID']}' -d 'client_secret=#{ENV['GMAIL_CLIENT_SECRET']}' -d 'grant_type=refresh_token'"
+    self.gmail_auth = res
+    self.save
   end
   
   def set_trello_webhook
@@ -142,7 +174,12 @@ class User  < ActiveRecord::Base
     if action_type == "createCard"
       text = action.data.card.name
       card_id = action.data.card.id
-      time = parse_sentence_for_time(text, card_id, action.idMemberCreator)
+      # time = parse_sentence_for_time(text, card_id, action.idMemberCreator)
+      intent = u.get_lex_intent(text)
+      if intent == "TrellomanSendMailGmail"
+        u.add_attachent_to_card(card_id, "Send Gmail", HOST + "/powerup/send_email")
+      end
+
     elsif action_type == "disablePlugin"
       #todo handle disable enble
     end
@@ -168,6 +205,10 @@ class User  < ActiveRecord::Base
 
   def add_comment_to_card(card_id, text)
     curl("'https://api.trello.com/1/cards/#{card_id}/actions/comments' -d 'text=#{text}'")
+  end
+
+  def add_attachent_to_card(card_id, name, url)
+    curl("'https://api.trello.com/1/cards/#{card_id}/attachments' -d 'url=#{url}' -d 'name=#{name}'", spawn_p: true)
   end
 
   def card(card_id)

@@ -12,6 +12,9 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get 'powerup/manifest' => "application#manifest"
   get 'powerup/index' => "welcome#powerup_index"
+  get 'powerup/send_email' => "welcome#send_email"
+  get 'oauth2callback' => "welcome#oauth2callback"
+  get 'oauth' => "welcome#oauth"
   get 'save_token' => "welcome#save_token"
   get 'auto_due' => "welcome#auto_due"
   post 'incoming_trello' => "welcome#incoming_trello"
