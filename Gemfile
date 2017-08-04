@@ -30,6 +30,7 @@ gem 'jquery-rails'
 gem 'sass-rails', '~> 5.0'
 gem 'thin'
 gem 'chronic'
+gem 'puma'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
