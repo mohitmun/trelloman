@@ -3,19 +3,20 @@ class User  < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  store_accessor :json_store, :trello_token, :me_info, :trello_id, :auto_update_card, :updatable_cards
+  store_accessor :json_store, :trello_token, :me_info, :trello_id, :auto_update_card, :updatable_cards, :timezone_offset
   HOST = ENV['HOST']
   WEBHOOK_URL = "#{HOST}/incoming_trello"
   after_initialize :init
 
   def init
     self.updatable_cards = {} if self.updatable_cards.blank?
+    self.timezone_offset = 0 if self.timezone_offset.blank?
   end
   
   def set_trello_webhook
     board_ids = me_info.idBoards
     board_ids.each do |board_id|
-      curl("'https://api.trello.com/1/webhooks' -d 'idModel=#{board_id}' -d 'description=My Webhook' -d 'callbackURL=#{WEBHOOK_URL}'")
+      curl("'https://api.trello.com/1/webhooks' -d 'idModel=#{board_id}' -d 'description=My Webhook' -d 'callbackURL=#{WEBHOOK_URL}'", spawn_p: true)
     end
   end
 
@@ -57,7 +58,7 @@ class User  < ActiveRecord::Base
     # RubyPython.stop
     #
     data = {card_id: card_id, user_id: user_id}
-    User.curl "-G 'https://sutime.herokuapp.com' --data-urlencode 'q=#{s}' --data-urlencode 'callback_data=#{data.to_json}' --data-urlencode 'callback_url=#{HOST}/incoming_sutime'"
+    User.curl "-G 'https://sutime.herokuapp.com' --data-urlencode 'q=#{s}' --data-urlencode 'callback_data=#{data.to_json}' --data-urlencode 'callback_url=#{HOST}/incoming_sutime'", spawn_p: true
     # return res
   end
 
@@ -76,30 +77,44 @@ class User  < ActiveRecord::Base
     )
   end
 
-  def self.create_user_from_trello_token(token)
+  def self.create_user_from_trello_token(token, tz: nil)
     # trello_client = get_trello_client(token)
     u = User.find_by_trello_token(token) rescue nil
     if u.blank?
       u = User.new(trello_token: token)
       me_info = u.me
+      existing_user = User.find_by(email: me_info.email)
+      if existing_user
+        u = existing_user
+        u.trello_token = token
+      end
       u.email = me_info.email
       u.password = Random.rand(10**10)
       u.me_info = me_info
+      if tz
+        u.timezone_offset = tz
+      end
       u.trello_id = me_info.id
       u.save
-      u.set_trello_webhook
+      # u.set_trello_webhook
     end
     return u
   end
 
-  def curl(s)
-    User.curl("#{s}  -d 'token=#{self.trello_token}' -d 'key=#{ENV['TRELLO_APP_KEY']}'")
+  def curl(s, spawn_p: false)
+    User.curl("#{s}  -d 'token=#{self.trello_token}' -d 'key=#{ENV['TRELLO_APP_KEY']}'", spawn_p: spawn_p)
   end
 
-  def self.curl(s)
+  def self.curl(s, spawn_p: false)
     cmd = "curl #{s}"
     log cmd
-    res = `#{cmd}`
+    if spawn_p
+      f = IO.popen(cmd)
+      log("spawn_ping ....")
+      res = "{}"
+    else
+      res = `#{cmd}`
+    end
     log res
     return res.parse_json
   end
@@ -119,6 +134,7 @@ class User  < ActiveRecord::Base
   def self.handle_webhook(data)
     action = data.action
     action_type = action.type
+    #todo when card is updated again check for time
     if action_type == "createCard"
       text = action.data.card.name
       card_id = action.data.card.id
@@ -130,9 +146,15 @@ class User  < ActiveRecord::Base
     if auto_update_card
       update_card(card_id, due: due)
     else
+      #todo add comment
+      #click 'add due date to blah blah' to
       self.updatable_cards[card_id] = due
       self.save
     end
+  end
+
+  def authorized?
+    me.is_a?(Hash)
   end
 
   def self.incoming_sutime(data)
@@ -140,14 +162,16 @@ class User  < ActiveRecord::Base
     log(data)
     callback_data = data.callback_data.parse_json
     text = data.sutime_result.last.text rescue nil
-    if text.blank?
+    value = data.sutime_result.last.value rescue nil
+    if value.blank?
       time = nil
     else
-      time = Chronic.parse(text)
+      # time = Chronic.parse(value)
+      time = DateTime.parse(value)
     end
     if time
       u = User.find_by_trello_id(callback_data.user_id)
-      u.update_card_with_due_date(callback_data.card_id, time.to_i*1000)
+      u.update_card_with_due_date(callback_data.card_id, (time.to_i + (u.timezone_offset*60))*1000)
     end
   end
 
