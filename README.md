@@ -32,6 +32,9 @@ To above mentioned problem, best solution is runnig seperate service. slug size 
 ### Duration and Timezone
 due date can be absolute or relative. one might say in relative like 'complete task in 2 days', 'meeting after 5 hours', or in absolute 'Call at 5pm'. Luckily SUTime provides type where it mentions whether its duration or time. One of the challenge was get user's timezone, accoringly convert time to unix timestamp and provide it Trello api
 
+## Accomplishments that I'm proud of
+Running both services on freetier Heroku. Damn!
+
 ## What's next for Deadline
 - When it comes to NLP, there are endless possibilies. One more use case I can think of is auto labeling cards, auto assignment to team members. It can really change the way large team does project management on Trello 
 - Prompt user to set due date via attachment section rather than comments. seems intrusive
