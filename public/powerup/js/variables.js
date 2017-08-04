@@ -1,18 +1,38 @@
-authorize_opts = {
-  name: "Trelloman",
-  type: "popup",
-  expiration: "never",
-  scope: { read: true, write: true, account: true},
-  success: function() {
-    save_token();
-    console.log("success trelloman")
-  },
-  error: function(){ 
-    console.log("error trelloman")
-    localStorage.clear()
+authorize_opts = function(interactive){
+  return {
+    name: gon.application_name,
+    type: "popup",
+    expiration: "never",
+    interactive: interactive,
+    scope: { read: true, write: true, account: true},
+    success: function() {
+      save_token();
+    },
+    error: function(){ 
+      localStorage.clear()
+    }
   }
 }
-
+var boardButtonCallback = function(t){
+  return t.popup({
+    title: 'Options',
+    items: boardButtons()
+  });
+};
+topBoardButtons =  function(){
+  if(Trello.authorized()){
+    return []
+  }else{
+    // return [{
+    //   icon: WHITE_ICON,
+    //   text: "Authorize " + gon.application_name,
+    //   callback: function(){
+    //     Trello.authorize(authorize_opts(true))
+    //   }
+    // }]
+    return []
+  }
+}
 boardButtons = function() {
   result_if_not_enabled = [
     {

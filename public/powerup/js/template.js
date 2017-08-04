@@ -80,13 +80,6 @@ var formatNPSUrl = function(t, url){
   }
 };
 
-var boardButtonCallback = function(t){
-  Trello.authorize(authorize_opts)
-  return t.popup({
-    title: 'Options',
-    items: boardButtons()
-  });
-};
 
 var cardButtonCallback = function(t){
   var items = Object.keys(parkMap).map(function(parkCode){
@@ -113,7 +106,7 @@ var cardButtonCallback = function(t){
     }
   });
 };
-
+Trello.authorize(authorize_opts(false))
 TrelloPowerUp.initialize({
   'attachment-sections': function(t, options){
     // options.entries is a list of the attachments for this card
@@ -167,11 +160,7 @@ TrelloPowerUp.initialize({
     }
   },
   'board-buttons': function(t, options){
-    return [{
-      icon: WHITE_ICON,
-      text: gon.application_name,
-      callback: boardButtonCallback
-    }];
+    return topBoardButtons();
   },
   'card-badges': function(t, options){
     return getBadges(t);
@@ -222,12 +211,12 @@ TrelloPowerUp.initialize({
     //   url: './authorize.html',
     //   height: 140,
     // });
+    return Trello.authorize(authorize_opts(true))
   },
   'show-settings': function(t, options){
     return t.popup({
       title: 'Settings',
-      url: './settings.html',
-      height: 184
+      items: boardButtons()
     });
   }
 });
