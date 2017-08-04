@@ -9,7 +9,7 @@ class WelcomeController < ApplicationController
   def powerup_index
     headers["X-Frame-Options"] = "ALLOWALL"
     #todo if audo due date then dont show button
-    gon.card_button_text = "Auto Due Date"
+    gon.card_button_text = User.get_manifest.name
     gon.application_name = User.get_manifest.name
     render "welcome/powerup_index"
   end
