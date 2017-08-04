@@ -5,7 +5,7 @@ function save_token() {
     console.log(data)
   });
 }
-function auto_due(enable){
+auto_due = function(enable){
   localStorage.setItem(auto_due, enable)
   $.getJSON("/auto_due?enable="+ enable, function(data){
     console.log("auto_due ")

@@ -2,6 +2,7 @@
 
 var WHITE_ICON = './images/icon-white.svg';
 var GRAY_ICON = './images/icon-gray.svg';
+var GREEN_ICON = './images/icon-green.svg';
 
 var parkMap = {
   acad: 'Acadia National Park',
@@ -82,8 +83,8 @@ var formatNPSUrl = function(t, url){
 var boardButtonCallback = function(t){
   Trello.authorize(authorize_opts)
   return t.popup({
-    title: 'Popup List Example',
-    items: boardButtons
+    title: 'Options',
+    items: boardButtons()
   });
 };
 
@@ -168,7 +169,7 @@ TrelloPowerUp.initialize({
   'board-buttons': function(t, options){
     return [{
       icon: WHITE_ICON,
-      text: 'Trelloman',
+      text: gon.application_name,
       callback: boardButtonCallback
     }];
   },
@@ -178,7 +179,7 @@ TrelloPowerUp.initialize({
   'card-buttons': function(t, options) {
     return [{
       icon: GRAY_ICON,
-      text: 'Template',
+      text: gon.card_button_text,
       callback: cardButtonCallback
     }];
   },
@@ -230,11 +231,3 @@ TrelloPowerUp.initialize({
     });
   }
 });
-
-function save_token() {
-  token = Trello.token()
-  $.getJSON("/save_token?token="+ token, function(data){
-    console.log("save token res")
-    console.log(data)
-  });
-}
