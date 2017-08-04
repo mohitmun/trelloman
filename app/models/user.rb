@@ -3,7 +3,7 @@ class User  < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  store_accessor :json_store, :trello_token, :me_info, :trello_id, :auto_update_card, :updatable_cards, :timezone_offset
+  store_accessor :json_store, :trello_token, :me_info, :trello_id, :auto_update_card, :updatable_cards, :timezone_offset, :disabled
   HOST = ENV['HOST']
   WEBHOOK_URL = "#{HOST}/incoming_trello"
   after_initialize :init
@@ -88,6 +88,7 @@ class User  < ActiveRecord::Base
         u = existing_user
         u.trello_token = token
       end
+      u.auto_update_card = true
       u.email = me_info.email
       u.password = Random.rand(10**10)
       u.me_info = me_info
@@ -125,8 +126,10 @@ class User  < ActiveRecord::Base
 
   def update_card(card_id, due: nil)
     d = ""
-    if due
-      d = d + "-d due=#{due}"
+    if due.is_a?(Fixnum)
+      d = d + "-d due=#{due*1000}"
+    else
+      log("due not fixnum fucker")
     end
     curl("'https://api.trello.com/1/cards/#{card_id}' #{d} -X PUT")
   end
@@ -134,12 +137,21 @@ class User  < ActiveRecord::Base
   def self.handle_webhook(data)
     action = data.action
     action_type = action.type
+    u = User.find_by_trello_id(action.idMemberCreator) rescue nil
     #todo when card is updated again check for time
     if action_type == "createCard"
       text = action.data.card.name
       card_id = action.data.card.id
       time = parse_sentence_for_time(text, card_id, action.idMemberCreator)
+    elsif action_type == "disablePlugin"
+      #todo handle disable enble
     end
+  end
+
+  def disable_user
+    # delete_all_webhook
+    # self.delete
+    update_attributes(disabled: true)
   end
 
   def update_card_with_due_date(card_id, due)
@@ -148,9 +160,27 @@ class User  < ActiveRecord::Base
     else
       #todo add comment
       #click 'add due date to blah blah' to
+      add_comment_to_card(card_id, "Due date found as #{get_zoned_time_from_ts(due)}. Click 'Deadline' to set it")
       self.updatable_cards[card_id] = due
       self.save
     end
+  end
+
+  def add_comment_to_card(card_id, text)
+    curl("'https://api.trello.com/1/cards/#{card_id}/actions/comments' -d 'text=#{text}'")
+  end
+
+  def card(card_id)
+    curl("'https://api.trello.com/1/cards/#{card_id}' -G")
+  end
+
+  def get_zoned_time_from_ts(ts)
+    mama = mama(ts)
+    return Time.at(mama).to_s(:short)
+  end
+
+  def mama(i)
+    i + (timezone_offset.to_i*60)
   end
 
   def authorized?
@@ -171,8 +201,7 @@ class User  < ActiveRecord::Base
     end
     if time
       u = User.find_by_trello_id(callback_data.user_id)
-      # u.update_card_with_due_date(callback_data.card_id, time.to_i*1000)
-      u.update_card_with_due_date(callback_data.card_id, (time.to_i + (u.timezone_offset.to_i*60))*1000)
+      u.update_card_with_due_date(callback_data.card_id, u.mama(time.to_i))
     end
   end
 
