@@ -4,6 +4,8 @@ I haven't use Trello much in past and just stared using it few days back. I was 
 ## What it does
 When you create any card with date/time/duration in it, Deadline power-up will recognize it and set due date for you without any manual intervention. There are two modes of operation. If you enable auto setting of due date, it will update due date immidiately after card is created. it its disabled you can quickly add recodgnised due date to board. I works seemless on any platform Trello supports.
 
+![Deadline](https://github.com/mohitmun/deadline-powerup-trello/raw/deadline_new/deadline.gif)
+
 ## Features
 - Support all platforms (Web, Android and iOS)
 - Option to enable and disable auto assigning due-date (#2 image)
