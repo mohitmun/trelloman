@@ -22,11 +22,13 @@ I wanted to build something which works on all platforms. Natural way to achive 
 SUTime is written in java and main app is written rails. I couldn't find ruby bindings for SUTime and had very time for writing on my own. I looked up to python bindings and it worked. so now i was runnning python bindings of SUTime in ruby. Inception. I was working perfectly on local but when I deployed to heroku new problem started arising. 
   - Slug size exceeded 500 mb 
   - Boot time of SUTime was > 30s so heroku request timeouts
-Challenge was how can I make it run on freetier on heroku so users can quickly deploy and start using it
+Challenge was how can I make it run on freetier on heroku so users can quickly deploy and start using it.
 
 ### Seperate Service for NLP
 To above mentioned problem, best solution is runnig seperate service. slug size went down but timeout issue persisted. Solution? Background Jobs. I used [rq](https://github.com/nvie/rq/) for python and moved SUTime initilization to backound process. It worked.
 
+### Duration and Timezone
+due date can be absolute or relative. one might say in relative like 'complete task in 2 days', 'meeting after 5 hours', or in absolute 'Call at 5pm'. Luckily SUTime provides type where it mentions whether its duration or time. One of the challenge was get user's timezone, accoringly convert time to unix timestamp and provide it Trello api
 
 ## What's next for Deadline
 - When it comes to NLP, there are endless possibilies. One more use case I can think of is auto labeling cards, auto assignment to team members. It can really change the way large team does project management on Trello 
@@ -35,30 +37,4 @@ To above mentioned problem, best solution is runnig seperate service. slug size 
 
 ### Known bugs
 - Webhooks still active after disabling extension (do disablePlugin event workaround)
-
-
-
-
-
-
-
-instruction to self host
-
-ruby python java
-
-
-
-challenges faced:
-  heroku python
-  java
-  rby
-  slug size
-  because of slug size split into 2
-  talk about jvm memory 
-  redis queue
-  timezone
-
-features:
-  set due date
-
-i have not used much so dont know flow
+- process again after Updating card 
