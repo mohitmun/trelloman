@@ -171,7 +171,7 @@ class User  < ActiveRecord::Base
     end
     if time
       u = User.find_by_trello_id(callback_data.user_id)
-      u.update_card_with_due_date(callback_data.card_id, (time.to_i + (u.timezone_offset*60))*1000)
+      u.update_card_with_due_date(callback_data.card_id, (time.to_i + (u.timezone_offset.to_i*60))*1000)
     end
   end
 
