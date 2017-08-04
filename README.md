@@ -8,9 +8,9 @@ When you create any card with date/time/duration in it, Deadline power-up will r
 
 ## Features
 - Support all platforms (Web, Android and iOS)
-- Option to enable and disable auto assigning due-date (#2 image)
+- Option to enable and disable auto assigning due-date
 - Parses duration
-- Open Sourced
+
 
 ## How we built it, Challenges faced and Learning
 
